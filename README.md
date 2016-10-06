@@ -1,6 +1,6 @@
 # neural_tv
 
-This is the source code for the [Neural TV Twitter Bot](https://twitter.com/neural_tv). The bot assumes a (working) copy of [neuraltalk2](https://github.com/karpathy/neuraltalk2) is in the `neuraltalk2/` subdirectory, alongside the unzipped [pretrained checkpoint model](http://cs.stanford.edu/people/karpathy/neuraltalk2/checkpoint_v1.zip).
+This is the source code for the [Neural TV Twitter Bot](https://twitter.com/neural_tv), a bot that watches TV and tweets what it sees using a recurrent neural network for captioning images. The bot assumes a (working) copy of [neuraltalk2](https://github.com/karpathy/neuraltalk2) is in the `neuraltalk2/` subdirectory, alongside the unzipped [pretrained checkpoint model](http://cs.stanford.edu/people/karpathy/neuraltalk2/checkpoint_v1.zip).
 
 * `hdhomerun-screenshot.rb` - finds an HDHomeRun on the local network and captures frames from a random channel
 * `neuraltv.rb` - takes the captures and tweets a random result
