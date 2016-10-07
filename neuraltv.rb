@@ -5,7 +5,7 @@ require 'json'
 
 secrets = JSON.parse(File.read('.secrets.json'))
 TV_PATH = secrets['sync_path']
-IMAGE_BOTS = %w{pixelsorter imgblur imgshredder imgblender imgzoombot imgshear}
+IMAGE_BOTS = %w{pixelsorter imgblur imgshredder imgblender imgzoombot imgshear lowpolybot}
 
 # delete small files, these are likely blank/corrupt screenshots
 $stderr.puts `find #{TV_PATH} -name '*.jpg' -size -10k -print -delete`
