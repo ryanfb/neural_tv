@@ -5,6 +5,7 @@ require 'json'
 
 secrets = JSON.parse(File.read('.secrets.json'))
 TV_PATH = secrets['sync_path']
+IMAGE_BOTS = %w{pixelsorter imgblur imgshredder imgblender imgzoombot imgshear}
 
 # delete small files, these are likely blank/corrupt screenshots
 $stderr.puts `find #{TV_PATH} -name '*.jpg' -size -10k -print -delete`
@@ -44,7 +45,12 @@ if $?.success?
     image = "neuraltalk2/vis/imgs/img#{selected['image_id']}.jpg"
     $stderr.puts image
 
-    client.update_with_media(selected['caption'], File.new(image))
+    bot_mention = ''
+    if rand(0..9) == 0
+      bot_mention = " @#{IMAGE_BOTS.sample}"
+    end
+
+    client.update_with_media(selected['caption'] + bot_mention, File.new(image))
   rescue Twitter::Error, Twitter::Error::Forbidden => e
     $stderr.puts e.inspect
     retry
