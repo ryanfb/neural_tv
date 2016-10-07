@@ -47,7 +47,7 @@ if $?.success?
 
     bot_mention = ''
     if rand(0..9) == 0
-      bot_mention = " @#{IMAGE_BOTS.sample}"
+      bot_mention = " /cc @#{IMAGE_BOTS.sample}"
     end
 
     client.update_with_media(selected['caption'] + bot_mention, File.new(image))
