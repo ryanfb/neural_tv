@@ -10,6 +10,7 @@ def degender(input)
   output.gsub!(/\b(man|woman|boy|girl)\b/,'person')
   output.gsub!(/\b(men|women|boys|girls)\b/,'people')
   output.gsub!(/\b(his|her)\b/,'their')
+  output.gsub!(/\b(himself|herself)\b/,'themself')
   return output
 end
 
