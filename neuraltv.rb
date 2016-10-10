@@ -3,6 +3,16 @@
 require 'twitter'
 require 'json'
 
+def degender(input)
+  output = input
+  output.gsub!(/\b(a man and woman|a woman and man|a man and a woman|a woman and a man)\b/,'two people')
+  output.gsub!(/little \b(boy|girl)\b/,'child')
+  output.gsub!(/\b(man|woman|boy|girl)\b/,'person')
+  output.gsub!(/\b(men|women|boys|girls)\b/,'people')
+  output.gsub!(/\b(his|her)\b/,'their')
+  return output
+end
+
 secrets = JSON.parse(File.read('.secrets.json'))
 TV_PATH = secrets['sync_path']
 IMAGE_BOTS = %w{pixelsorter imgblur imgshredder imgblender lowpolybot a_quilt_bot ArtyMash ArtyCurve ArtyNegative ArtyAbstract ArtyCrush ArtyWinds IMG2ASCII acidblotbot kaleid_o_bot CommonsBot imgbotrays}
@@ -50,7 +60,7 @@ if $?.success?
       bot_mention = " /cc @#{IMAGE_BOTS.sample}"
     end
 
-    client.update_with_media(selected['caption'] + bot_mention, File.new(image))
+    client.update_with_media(degender(selected['caption']) + bot_mention, File.new(image))
   rescue Twitter::Error, Twitter::Error::Forbidden => e
     $stderr.puts e.inspect
     retry
