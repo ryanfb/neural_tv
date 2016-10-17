@@ -6,7 +6,8 @@ require 'json'
 def degender(input)
   output = input
   output.gsub!(/\b(a man and woman|a woman and man|a man and a woman|a woman and a man)\b/,'two people')
-  output.gsub!(/\bof \b(her|him|herself|himself)\b/,'of themself')
+  output.gsub!(/\bof \b(her|him|herself|himself)$/,'of themself')
+  output.gsub!(/\bof \b(her|him)\b/,'of their')
   output.gsub!(/\blittle \b(boy|girl)\b/,'child')
   output.gsub!(/\b(man|woman|boy|girl)\b/,'person')
   output.gsub!(/\b(men|women|boys|girls)\b/,'people')
