@@ -18,12 +18,14 @@ end
 
 secrets = JSON.parse(File.read('.secrets.json'))
 TV_PATH = secrets['sync_path']
-IMAGE_BOTS = %w{pixelsorter imgblur imgshredder imgblender lowpolybot a_quilt_bot ArtyMash ArtyCurve ArtyNegative ArtyAbstract ArtyCrush ArtyWinds IMG2ASCII acidblotbot kaleid_o_bot CommonsBot imgbotrays}
+IMAGE_BOTS = %w{pixelsorter imgblur imgshredder imgblender lowpolybot a_quilt_bot ArtyMash ArtyCurve ArtyNegative ArtyAbstract ArtyCrush ArtyWinds ArtyPolar IMG2ASCII acidblotbot kaleid_o_bot CommonsBot imgbotrays baldesorry tinyimagebot imgavgbot ClipArtBot _emo_ji}
 
 # delete small files, these are likely blank/corrupt screenshots
 $stderr.puts `find #{TV_PATH} -name '*.jpg' -size -10k -print -delete`
 
-$stderr.puts `cd neuraltalk2 && th eval.lua -model model_id1-501-1448236541.t7 -image_folder #{TV_PATH} -num_images -1`
+# $stderr.puts `cd neuraltalk2 && th eval.lua -model model_id1-501-1448236541.t7 -image_folder #{TV_PATH} -num_images -1`
+
+$stderr.puts `docker run -i -v #{TV_PATH}:/data/images -v #{File.expand_path(File.dirname(__FILE__))}/model:/data/model ryanfb/neuraltv-neuraltalk2:latest`
 
 if $?.success?
   $stderr.puts "neuraltalk2 succeeded, tweeting random result"
@@ -41,7 +43,7 @@ if $?.success?
     utterances = File.readlines('neuraltv-utterances.txt').map{|u| u.chomp}
   end
 
-  vis = JSON.parse(File.read('neuraltalk2/vis/vis.json'))
+  vis = JSON.parse(File.read("#{TV_PATH}/vis/vis.json"))
   begin
     selected = nil
 
@@ -55,15 +57,17 @@ if $?.success?
       selected = vis.sample
     end
     $stderr.puts selected.inspect
-    image = "neuraltalk2/vis/imgs/img#{selected['image_id']}.jpg"
+    image = "#{TV_PATH}/vis/imgs/img#{selected['image_id']}.jpg"
     $stderr.puts image
 
     bot_mention = ''
-    if rand(0..9) == 0
+    if rand(0..9) <= 0
       bot_mention = " /cc @#{IMAGE_BOTS.sample}"
     end
 
-    client.update_with_media(degender(selected['caption']) + bot_mention, File.new(image))
+    tweet_text = degender(selected['caption']) + bot_mention
+    $stderr.puts "Tweeting: #{tweet_text}"
+    client.update_with_media(tweet_text, File.new(image))
   rescue Twitter::Error, Twitter::Error::Forbidden => e
     $stderr.puts e.inspect
     retry
@@ -73,5 +77,7 @@ if $?.success?
     f.puts utterances.join("\n")
   end
 
-  `rm -v #{TV_PATH}*.jpg`
+  $stderr.puts `rm -rv #{TV_PATH}/vis`
+  $stderr.puts `rm -v #{TV_PATH}*.jpg`
 end
+$stderr.puts "neuraltv.rb finished!"
