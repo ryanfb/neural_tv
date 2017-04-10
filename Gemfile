@@ -1,2 +1,5 @@
 source 'https://rubygems.org'
+gem 'srt'
 gem 'twitter'
+# gem 'mastodon-api', require: 'mastodon', git: 'https://github.com/tootsuite/mastodon-api.git'
+gem 'rest-client'
