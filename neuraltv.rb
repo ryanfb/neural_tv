@@ -78,7 +78,7 @@ if $?.success?
       $stderr.puts "Tooting:"
       result = RestClient.post "#{secrets['mastodon_instance']}/api/v1/media", {:file => File.new(image,'rb')}, {:Authorization => "Bearer #{secrets['mastodon_access_token']}"}
       media =  JSON.parse(result.body)
-      result = RestClient.post "#{secrets['mastodon_instance']}/api/v1/statuses", {:status => tweet_text, :media_ids => [media["id"]], :visibility => "public"}, {:Authorization => "Bearer #{secrets['mastodon_access_token']}"}
+      result = RestClient.post "#{secrets['mastodon_instance']}/api/v1/statuses", {:status => degender(selected['caption']), :media_ids => [media["id"]], :visibility => "public"}, {:Authorization => "Bearer #{secrets['mastodon_access_token']}"}
       $stderr.puts (JSON.parse(result.body).inspect)
     end
   rescue Twitter::Error, Twitter::Error::Forbidden => e
