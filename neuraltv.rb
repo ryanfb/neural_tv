@@ -20,12 +20,16 @@ secrets = JSON.parse(File.read('.secrets.json'))
 TV_PATH = secrets['sync_path']
 IMAGE_BOTS = %w{pixelsorter imgblur imgshredder imgblender lowpolybot a_quilt_bot ArtyMash ArtyCurve ArtyNegative ArtyAbstract ArtyCrush ArtyWinds ArtyPolar IMG2ASCII acidblotbot kaleid_o_bot CommonsBot imgbotrays baldesorry tinyimagebot imgavgbot ClipArtBot _emo_ji}
 
+# delete old files, so we don't overwhelm neuraltalk2
+$stderr.puts `find #{TV_PATH} -type f -mmin +10 -print -delete`
+$stderr.puts `rm -rfv #{TV_PATH}/vis`
+
 # delete small files, these are likely blank/corrupt screenshots
 $stderr.puts `find #{TV_PATH} -name '*.jpg' -size -10k -print -delete`
 
 # $stderr.puts `cd neuraltalk2 && th eval.lua -model model_id1-501-1448236541.t7 -image_folder #{TV_PATH} -num_images -1`
 
-$stderr.puts `docker run -i -v #{TV_PATH}:/data/images -v #{File.expand_path(File.dirname(__FILE__))}/model:/data/model ryanfb/neuraltv-neuraltalk2:latest`
+$stderr.puts `gtimeout -k 16m 15m docker run -i -v #{TV_PATH}:/data/images -v #{File.expand_path(File.dirname(__FILE__))}/model:/data/model ryanfb/neuraltv-neuraltalk2:latest`
 
 if $?.success?
   $stderr.puts "neuraltalk2 succeeded, tweeting random result"
