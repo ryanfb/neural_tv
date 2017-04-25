@@ -58,7 +58,7 @@ begin
     f.puts utterances.join("\n")
   end
 
-  if secrets.has_key?['mastodon_access_token'] && secrets.has_key?('mastodon_instance')
+  if secrets.has_key?('mastodon_access_token') && secrets.has_key?('mastodon_instance')
     $stderr.puts "Tooting:"
     # $stderr.puts mastodon_client.verify_credentials.inspect
     result = RestClient.post "#{secrets['mastodon_instance']}/api/v1/media", {:file => File.new(screenshot,'rb')}, {:Authorization => "Bearer #{secrets['mastodon_access_token']}"}

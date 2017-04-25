@@ -2,6 +2,7 @@
 
 require 'twitter'
 require 'json'
+require 'rest-client'
 
 def degender(input)
   output = input
@@ -72,6 +73,14 @@ if $?.success?
     tweet_text = degender(selected['caption']) + bot_mention
     $stderr.puts "Tweeting: #{tweet_text}"
     client.update_with_media(tweet_text, File.new(image))
+
+    if secrets.has_key?('mastodon_access_token') && secrets.has_key?('mastodon_instance') && (rand.round == 0)
+      $stderr.puts "Tooting:"
+      result = RestClient.post "#{secrets['mastodon_instance']}/api/v1/media", {:file => File.new(image,'rb')}, {:Authorization => "Bearer #{secrets['mastodon_access_token']}"}
+      media =  JSON.parse(result.body)
+      result = RestClient.post "#{secrets['mastodon_instance']}/api/v1/statuses", {:status => degender(selected['caption']), :sensitive => "true", :media_ids => [media["id"]], :visibility => "public"}, {:Authorization => "Bearer #{secrets['mastodon_access_token']}"}
+      $stderr.puts (JSON.parse(result.body).inspect)
+    end
   rescue Twitter::Error, Twitter::Error::Forbidden => e
     $stderr.puts e.inspect
     retry
