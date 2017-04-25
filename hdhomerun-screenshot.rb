@@ -33,6 +33,8 @@ filename = "#{Time.now.strftime("%Y-%m-%d-%H-%M-%S")}-#{channel['GuideName'].gsu
 $stderr.puts channel.inspect
 
 `curl -o #{filename}.ts #{channel['URL']}?duration=10`
+`ccextractor #{filename}.ts -o "srt/#{filename}.srt"`
+`bundle exec ./tv_sounds.rb srt/#{filename}.srt #{filename}.ts`
 `ffmpeg -i #{filename}.ts -vf "yadif=0:-1:0" -r 1/4 "#{File.join(secrets['sync_path'],filename)}_%03d.jpg"`
 
 # single frame extraction and manual conversion
